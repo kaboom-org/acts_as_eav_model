@@ -339,8 +339,7 @@ module ActiveRecord # :nodoc:
           attribute_name = attribute_name.to_s
           model_options = eav_options[model.name]
           return model_options[:fields].include?(attribute_name) unless model_options[:fields].nil?
-          return eav_attributes(model).collect {|field| field.to_s}.include?(attribute_name) unless
-            eav_attributes(model).nil?
+          return eav_attributes(model).collect {|field| field.to_s}.include?(attribute_name) unless eav_attributes(model).nil?
           true
         end
 
@@ -351,7 +350,10 @@ module ActiveRecord # :nodoc:
         # option is most likely easier.
         #
         def eav_attributes(model); nil end
-        
+       
+        def eav_options_for_instance 
+         eav_options.first.last 
+        end
         ##
         # CLK added a respond_to? implementation so that ActiveRecord AssociationProxy (polymorphic relationships)
         # does not mask the method_missing implementation here. See:
@@ -360,11 +362,13 @@ module ActiveRecord # :nodoc:
         # http://oldwiki.rubyonrails.org/rails/pages/MagicFieldNames
         #
         def respond_to_with_eav_behavior?(method_id, include_private = false)
-          if MAGIC_FIELD_NAMES.include?(method_id.to_sym)
-            respond_to_without_eav_behavior?(method_id, include_private)
-          else
-            true
-          end
+         attributes_association = eav_options_for_instance[:relationship_name]
+         actual_method_without_inquiry = method_id.to_s.gsub(/\?$/, '').to_sym
+
+         if self.send(attributes_association).collect{|model| model.name.to_sym}.include?(actual_method_without_inquiry)
+           return true
+         end
+         respond_to_without_eav_behavior?(method_id, include_private)
         end
 
         private
@@ -396,6 +400,7 @@ module ActiveRecord # :nodoc:
         def read_attribute_with_eav_behavior(attribute_name)
           attribute_name = attribute_name.to_s
           exec_if_related(attribute_name) do |model|
+
             return nil if !@remove_eav_attr.nil? && @remove_eav_attr.any? do |r|
               r[0] == model && r[1] == attribute_name
             end
@@ -491,6 +496,7 @@ module ActiveRecord # :nodoc:
         #
         def exec_if_related(attribute_name)
           return false if self.class.column_names.include?(attribute_name) || MAGIC_FIELD_NAMES.include?(attribute_name.to_sym)
+          return false if attribute_name =~ /^_/
           each_eav_relation do |model|
             if is_eav_attribute?(attribute_name, model)
               yield model
