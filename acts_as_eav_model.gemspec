@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
     "TODO"
   ]
   s.files = [
-    ".rvmrc",
     "CHANGELOG",
     "Gemfile",
     "Gemfile.lock",
