@@ -1,0 +1,15 @@
+class <%= migration_class_name %> < ActiveRecord::Migration
+  def self.up
+    create_table :<%= table_name %> do |t|
+      t.integer :<%= foreign_key_name %> :null => false
+      t.text :<%= name_field %>, :null => false
+      t.text :<%= value_field %>, :null => false
+      t.timestamps
+    end
+    add_index :<%= table_name %>, :<%= foreign_key_name %>
+  end
+
+  def self.down
+    drop_table :<%= table_name %>
+  end
+end
