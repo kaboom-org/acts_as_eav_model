@@ -228,6 +228,7 @@ module ActiveRecord # :nodoc:
           rescue
             Object.const_set(options[:class_name],
             Class.new(ActiveRecord::Base)).class_eval do
+              attr_accessible options[:name_field].to_sym, options[:value_field].to_sym, options[:foreign_key].to_sym
               def self.reloadable? #:nodoc:
                 false
               end
