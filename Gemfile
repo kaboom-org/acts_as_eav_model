@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem "rails"
-#gem "jeweler"
+gem "jeweler"
 gem "sqlite3"
 
 if RUBY_VERSION < '1.9'
