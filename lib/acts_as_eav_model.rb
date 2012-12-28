@@ -278,7 +278,7 @@ module ActiveRecord # :nodoc:
             end
           end
           
-          create_attribute_table
+          #create_attribute_table
           
         end
 
@@ -301,7 +301,6 @@ module ActiveRecord # :nodoc:
               model = eav_options[key][:class_name]
 
               return if connection.tables.include?(eav_options[model][:table_name])
-
               self.connection.create_table(eav_options[model][:table_name], options) do |t|
                 t.integer eav_options[model][:foreign_key], :null => false
                 t.string eav_options[model][:name_field], :null => false
