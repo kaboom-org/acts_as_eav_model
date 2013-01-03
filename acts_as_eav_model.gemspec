@@ -113,18 +113,18 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rails>, [">= 0"])
       s.add_runtime_dependency(%q<jeweler>, [">= 0"])
-      s.add_runtime_dependency(%q<sqlite3>, [">= 0"])
+      #s.add_runtime_dependency(%q<sqlite3>, [">= 0"])
       s.add_runtime_dependency(%q<ruby-debug19>, [">= 0"])
     else
       s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
-      s.add_dependency(%q<sqlite3>, [">= 0"])
+      #s.add_dependency(%q<sqlite3>, [">= 0"])
       s.add_dependency(%q<ruby-debug19>, [">= 0"])
     end
   else
     s.add_dependency(%q<rails>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
-    s.add_dependency(%q<sqlite3>, [">= 0"])
+    #s.add_dependency(%q<sqlite3>, [">= 0"])
     s.add_dependency(%q<ruby-debug19>, [">= 0"])
   end
 end
