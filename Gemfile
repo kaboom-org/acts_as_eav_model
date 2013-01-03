@@ -2,7 +2,6 @@ source "http://rubygems.org"
 
 gem "rails"
 #gem "jeweler"
-gem "sqlite3"
 
 if RUBY_VERSION < '1.9'
   gem "ruby-debug"
@@ -12,4 +11,5 @@ end
 
 group :test do
 	gem "rspec-rails", "~> 2.0"
+  gem "sqlite3"
 end
