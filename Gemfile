@@ -9,7 +9,7 @@ else
   gem "ruby-debug19"
 end
 
-group :test do
+group :development, :test do
 	gem "rspec-rails", "~> 2.0"
   gem "sqlite3"
 end
