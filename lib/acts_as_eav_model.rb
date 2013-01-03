@@ -228,6 +228,7 @@ module ActiveRecord # :nodoc:
           rescue
             Object.const_set(options[:class_name],
             Class.new(ActiveRecord::Base)).class_eval do
+              attr_accessible options[:name_field].to_sym, options[:value_field].to_sym, options[:foreign_key].to_sym
               def self.reloadable? #:nodoc:
                 false
               end
@@ -277,7 +278,7 @@ module ActiveRecord # :nodoc:
             end
           end
           
-          create_attribute_table
+          #create_attribute_table
           
         end
 
@@ -300,7 +301,6 @@ module ActiveRecord # :nodoc:
               model = eav_options[key][:class_name]
 
               return if connection.tables.include?(eav_options[model][:table_name])
-
               self.connection.create_table(eav_options[model][:table_name], options) do |t|
                 t.integer eav_options[model][:foreign_key], :null => false
                 t.string eav_options[model][:name_field], :null => false

@@ -4,17 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{acts_as_eav_model}
-  s.version = "0.0.2"
+  s.name = "acts_as_eav_model"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcus Wyatt"]
-  s.date = %q{2010-11-17}
-  s.description = %q{Entity-attribute-value model (EAV) is a data model that is used in circumstances 
-    where the number of attributes (properties, parameters) that can be used to describe 
-    a thing (an "entity" or "object") is potentially very vast, but the number that will 
-    actually apply to a given entity is relatively modest.}
-  s.email = %q{}
+  s.date = "2012-12-28"
+  s.description = "Entity-attribute-value model (EAV) is a data model that is used in circumstances \n    where the number of attributes (properties, parameters) that can be used to describe \n    a thing (an \"entity\" or \"object\") is potentially very vast, but the number that will \n    actually apply to a given entity is relatively modest."
+  s.email = ""
   s.extra_rdoc_files = [
     "README.rdoc",
     "TODO"
@@ -49,6 +46,8 @@ Gem::Specification.new do |s|
     "init.rb",
     "install.rb",
     "lib/acts_as_eav_model.rb",
+    "lib/generators/acts_as_eav_model/acts_as_eav_model_generator.rb",
+    "lib/generators/acts_as_eav_model/templates/acts_as_eav_model.rb.erb",
     "spec/dummy/Rakefile",
     "spec/dummy/app/controllers/application_controller.rb",
     "spec/dummy/app/helpers/application_helper.rb",
@@ -68,6 +67,7 @@ Gem::Specification.new do |s|
     "spec/dummy/config/environments/production.rb",
     "spec/dummy/config/environments/test.rb",
     "spec/dummy/config/initializers/backtrace_silencers.rb",
+    "spec/dummy/config/initializers/hack.rb",
     "spec/dummy/config/initializers/inflections.rb",
     "spec/dummy/config/initializers/mime_types.rb",
     "spec/dummy/config/initializers/secret_token.rb",
@@ -98,55 +98,34 @@ Gem::Specification.new do |s|
     "spec/models/eav_validation_spec.rb",
     "spec/schema.rb",
     "spec/spec_helper.rb",
+    "test/generator.rb",
+    "test/helper.rb",
     "uninstall.rb"
   ]
-  s.homepage = %q{http://github.com/g5search/acts_as_eav_model}
+  s.homepage = "http://github.com/g5search/acts_as_eav_model"
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Entity Attribute Value Implementation for inclusion in ActiveRecord models.}
-  s.test_files = [
-    "spec/dummy/app/controllers/application_controller.rb",
-    "spec/dummy/app/helpers/application_helper.rb",
-    "spec/dummy/app/models/document.rb",
-    "spec/dummy/app/models/person.rb",
-    "spec/dummy/app/models/person_contact_info.rb",
-    "spec/dummy/app/models/post.rb",
-    "spec/dummy/app/models/post_attribute.rb",
-    "spec/dummy/app/models/preference.rb",
-    "spec/dummy/config/application.rb",
-    "spec/dummy/config/boot.rb",
-    "spec/dummy/config/environment.rb",
-    "spec/dummy/config/environments/development.rb",
-    "spec/dummy/config/environments/production.rb",
-    "spec/dummy/config/environments/test.rb",
-    "spec/dummy/config/initializers/backtrace_silencers.rb",
-    "spec/dummy/config/initializers/inflections.rb",
-    "spec/dummy/config/initializers/mime_types.rb",
-    "spec/dummy/config/initializers/secret_token.rb",
-    "spec/dummy/config/initializers/session_store.rb",
-    "spec/dummy/config/routes.rb",
-    "spec/dummy/db/schema.rb",
-    "spec/models/eav_model_with_no_arguments_spec.rb",
-    "spec/models/eav_model_with_options_spec.rb",
-    "spec/models/eav_validation_spec.rb",
-    "spec/schema.rb",
-    "spec/spec_helper.rb"
-  ]
-# 
-#   if s.respond_to? :specification_version then
-#     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-#     s.specification_version = 3
-# 
-#     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-#       s.add_runtime_dependency(%q<rails>, [">= 3.0.1"])
-#       s.add_runtime_dependency(%q<jeweler>, [">= 0"])
-#     else
-#       s.add_dependency(%q<rails>, ["~> 3.0.1"])
-#       s.add_dependency(%q<jeweler>, [">= 0"])
-#     end
-#   else
-#     s.add_dependency(%q<rails>, ["~> 3.0.1"])
-#     s.add_dependency(%q<jeweler>, [">= 0"])
-#   end
+  s.rubygems_version = "1.8.24"
+  s.summary = "Entity Attribute Value Implementation for inclusion in ActiveRecord models."
+
+  if s.respond_to? :specification_version then
+    s.specification_version = 3
+
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<rails>, [">= 0"])
+      s.add_runtime_dependency(%q<jeweler>, [">= 0"])
+      s.add_runtime_dependency(%q<sqlite3>, [">= 0"])
+      s.add_runtime_dependency(%q<ruby-debug19>, [">= 0"])
+    else
+      s.add_dependency(%q<rails>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
+      s.add_dependency(%q<sqlite3>, [">= 0"])
+      s.add_dependency(%q<ruby-debug19>, [">= 0"])
+    end
+  else
+    s.add_dependency(%q<rails>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
+    s.add_dependency(%q<sqlite3>, [">= 0"])
+    s.add_dependency(%q<ruby-debug19>, [">= 0"])
+  end
 end
 

@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem "rails"
-#gem "jeweler"
+gem "jeweler"
 
 if RUBY_VERSION < '1.9'
   gem "ruby-debug"
