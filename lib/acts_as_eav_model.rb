@@ -1,14 +1,14 @@
 module ActiveRecord # :nodoc:
   module Acts # :nodoc:
     ##
-    # ActsAsEavModel allow for the Entity-attribute-value model (EAV), also 
+    # ActsAsEavModel allow for the Entity-attribute-value model (EAV), also
     # known as object-attribute-value model and open schema on any of your ActiveRecord
-    # models. 
+    # models.
     #
     # = What is Entity-attribute-value model?
-    # Entity-attribute-value model (EAV) is a data model that is used in circumstances 
-    # where the number of attributes (properties, parameters) that can be used to describe 
-    # a thing (an "entity" or "object") is potentially very vast, but the number that will 
+    # Entity-attribute-value model (EAV) is a data model that is used in circumstances
+    # where the number of attributes (properties, parameters) that can be used to describe
+    # a thing (an "entity" or "object") is potentially very vast, but the number that will
     # actually apply to a given entity is relatively modest.
     #
     # = Typical Problem
@@ -80,7 +80,7 @@ module ActiveRecord # :nodoc:
     #
     module EavModel
 
-      MAGIC_FIELD_NAMES = [:created_at, :created_on, :updated_at, :updated_on, :created_by, :updated_by, 
+      MAGIC_FIELD_NAMES = [:created_at, :created_on, :updated_at, :updated_on, :created_by, :updated_by,
         :lock_version, :type, :id, :position, :parent_id, :lft, :rgt, :quote_value, :template, :to_ary,
         :marshal_dump, :marshal_load, :_dump, :_load, :to_yaml_type, :to_yaml, :yaml_initialize, :to_xml, :to_json, :as_json,
         :from_json, :from_xml,:validate,:validate_on_create,:validate_on_update].freeze
@@ -265,7 +265,7 @@ module ActiveRecord # :nodoc:
 
               # Carry out delayed actions before save
               after_validation :save_modified_eav_attributes,:on=>:update
-              
+
               # Make attributes seem real
               alias_method_chain :respond_to?, :eav_behavior
               alias_method_chain :method_missing, :eav_behavior
@@ -277,9 +277,9 @@ module ActiveRecord # :nodoc:
 
             end
           end
-          
+
           #create_attribute_table
-          
+
         end
 
       end
@@ -350,9 +350,9 @@ module ActiveRecord # :nodoc:
         # option is most likely easier.
         #
         def eav_attributes(model); nil end
-       
-        def eav_options_for_instance 
-         eav_options.first.last 
+
+        def eav_options_for_instance
+         eav_options.first.last
         end
         ##
         # CLK added a respond_to? implementation so that ActiveRecord AssociationProxy (polymorphic relationships)
@@ -361,14 +361,19 @@ module ActiveRecord # :nodoc:
         # Updated when certain magic fields (like timestamp columns) were interfering with saves, etc.
         # http://oldwiki.rubyonrails.org/rails/pages/MagicFieldNames
         #
-        def respond_to_with_eav_behavior?(method_id, include_private = false)
-         attributes_association = eav_options_for_instance[:relationship_name]
-         actual_method_without_inquiry = method_id.to_s.gsub(/\?$/, '').to_sym
-
-         if self.send(attributes_association).collect{|model| model.name.to_sym}.include?(actual_method_without_inquiry)
-           return true
-         end
-         respond_to_without_eav_behavior?(method_id, include_private)
+        def respond_to_with_eav_behavior?(attribute_name, include_private = false)
+          # first check is_eav_attribute? to prevent eager loading
+          each_eav_relation do |model|
+            if !eav_attributes(model).nil? && is_eav_attribute?(attribute_name, model)
+              return true
+            end
+          end
+          # next check via reading keys from EAV table
+          if !read_attribute_with_eav_behavior(attribute_name).nil?
+            return true
+          end
+          # fall back to super
+          respond_to_without_eav_behavior?(attribute_name, include_private)
         end
 
         private
@@ -404,10 +409,10 @@ module ActiveRecord # :nodoc:
             return nil if !@remove_eav_attr.nil? && @remove_eav_attr.any? do |r|
               r[0] == model && r[1] == attribute_name
             end
-            
+
             value_field = eav_options[model.name][:value_field]
             related_attribute = find_related_eav_attribute(model, attribute_name)
-            
+
             return nil if related_attribute.nil?
             return related_attribute.send(value_field)
           end
@@ -442,14 +447,14 @@ module ActiveRecord # :nodoc:
           end
           write_attribute_without_eav_behavior(attribute_name, value)
         end
-        
+
         ##
         # Custom method added by ckraybill!
         #
         def attribute_empty_with_eav_behavior(attribute_name)
           !read_attribute_with_eav_behavior(attribute_name).blank?
         end
-        
+
         ##
         # Implements eav-attributes as if real getter/setter methods
         # were defined.
@@ -478,7 +483,7 @@ module ActiveRecord # :nodoc:
         #
         def find_related_eav_attribute(model, attribute_name)
           name_field = eav_options[model.name][:name_field]
-          eav_related(model).to_a.find do |relation| 
+          eav_related(model).to_a.find do |relation|
             relation.send(name_field) == attribute_name
           end
         end
