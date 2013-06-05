@@ -376,6 +376,24 @@ module ActiveRecord # :nodoc:
           respond_to_without_eav_behavior?(attribute_name, include_private)
         end
 
+        ##
+        # Returns a hash of all eav key value pairs, optionally filtered by a model
+        def eav_hash(model = nil)
+          {}.tap do |hash|
+            models = model ? [model].flatten.compact : eav_options.keys
+            eav_options.each do |model, options|
+              if models.include?(model)
+                self.send(:eav_related, model.constantize).to_a.each do |relation|
+                  key = relation.send(options[:name_field])
+                  if key && is_eav_attribute?(key.to_sym, model.constantize)
+                    hash[key.to_sym] = relation.send(options[:value_field])
+                  end
+                end
+              end
+            end
+          end
+        end
+
         private
 
         ##
