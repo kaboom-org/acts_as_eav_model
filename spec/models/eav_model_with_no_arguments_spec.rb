@@ -44,7 +44,14 @@ describe "ActiveRecord Model annotated with 'has_eav_behavior' with no options i
     post_attr[0].should be_instance_of(PostAttribute)
     post_attr.size.should == 3
   end
-  
+
+  it "show expose many entity value attributes as a hash" do
+    hash = Post.find(1).eav_hash
+    hash[:comment].should == 'Foo Bar Industries gets two thumbs up'
+    hash[:intro].should == 'We deliver quality foobars to consumers nationwide and around the globe'
+    hash[:teaser].should == 'Coming October 7, the foobarantator'
+  end
+
   it "should create new attribute on save" do
     blog_post = Post.find_by_title("Following up from my first post.")
     blog_post.new_attribute = 'new_value'
